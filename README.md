@@ -6,8 +6,7 @@
 ![Figma](https://img.shields.io/badge/Design-Figma-red?style=flat-square&logo=figma&logoColor=white)  
 ![Supabase](https://img.shields.io/badge/Supabase-Authentication-brightgreen?style=flat-square&logo=supabase)
 
-**My Wonder App** is a proprietary, cross-platform mobile application developed by **Acumensa**, designed to enhance IoT device integration. 🌐 This app bridges the gap between the **My Wonder Pod** and your smartphone, delivering powerful features through **state-of-the-art Flutter technology**.
-
+This **Assignment** is designed to evaluate your **Flutter development** skills and **problem-solving** abilities. The task closely resembles features from our **OruPhones app**
 ---  
 
 ## 🎨 Design Reference
