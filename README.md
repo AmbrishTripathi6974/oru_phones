@@ -17,12 +17,14 @@ Explore the meticulously crafted UI/UX on [Figma](https://www.figma.com/design/l
 
 ## ✨ Features
 
-- **Seamless Authentication**: Powered by [Supabase](https://supabase.io/).
-- **Modern State Management**: Leveraging the BLoC pattern for efficiency.
-- **IoT Protocol Integration**: Supports **HTTPv2** for smooth device communication.
-- **Error-Handling States**: Provides a resilient user experience.
-- **Animations**: Stunning micro-interactions using **Lottie**.
-- **Responsive UI**: Designed for exceptional usability across all device sizes.
+🚀 Authentication Flow
+
+✔ **Splash Screen** → Checks authentication state & navigates accordingly.
+✔ **Login OTP Screen** → Enter phone number & request OTP.
+✔ **Verify OTP Screen** → Enter OTP & authenticate user.
+✔ **Confirm Name Screen** → Prompt new users to set a name before proceeding.
+✔ **Standalone & Bottom Sheet Support** → Authentication screens work both as full pages and bottom.
+✔ **State Management** → Use Flutter Bloc.
 
 ---  
 
