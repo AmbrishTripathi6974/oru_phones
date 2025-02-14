@@ -24,6 +24,7 @@ Explore the meticulously crafted UI/UX on [Figma](https://www.figma.com/design/l
 ✔ **State Management** - Use Flutter Bloc.
 ✔ **Standalone & Bottom Sheet Support** - Authentication screens work both as full pages and bottom sheets.  
 
+
 ---  
 
 ## 🛠️ Tech Stack
