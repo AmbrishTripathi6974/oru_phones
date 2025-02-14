@@ -25,6 +25,8 @@ Explore the meticulously crafted UI/UX on [Figma](https://www.figma.com/design/l
 ✔ **Confirm Name Screen** - Prompt new users to set a name before proceeding.  
 ✔ **Standalone & Bottom Sheet Support** - Authentication screens work both as full pages and bottom sheets.  
 ✔ **State Management** - Use Flutter Bloc.  
+✔ **Error Handling** - Implement proper HTTP API error management.
+✔ **Smooth UI/UX** - Ensure responsive & high-performance design.
 
 ---  
 
