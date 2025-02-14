@@ -12,7 +12,7 @@
 
 ## 🎨 Design Reference
 
-Explore the meticulously crafted UI/UX on [Figma](https://www.figma.com/design/hiyr0iiTzdOCUlPDyr3XuS/%5BFor-review%5D-My-Wonder?node-id=5-2&t=4G6xKr5y4LSu9LUs-1).
+Explore the meticulously crafted UI/UX on [Figma]([https://www.figma.com/design/hiyr0iiTzdOCUlPDyr3XuS/%5BFor-review%5D-My-Wonder?node-id=5-2&t=4G6xKr5y4LSu9LUs-1](https://www.figma.com/design/l2K16E94wmCvWeG2EpWXVF/ORUphones-Flutter-Dev-Intern-Assignment?node-id=0-1&p=f&t=gPdckx0LXhrGvGHS-0)).
 
 ---  
 
