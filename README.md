@@ -12,7 +12,7 @@
 
 ## 🎨 Design Reference
 
-Explore the meticulously crafted UI/UX on [Figma]([https://www.figma.com/design/l2K16E94wmCvWeG2EpWXVF/ORUphones-Flutter-Dev-Intern-Assignment?node-id=0-1&p=f&t=gPdckx0LXhrGvGHS-0]).
+Explore the meticulously crafted UI/UX on [Figma](https://www.figma.com/design/l2K16E94wmCvWeG2EpWXVF/ORUphones-Flutter-Dev-Intern-Assignment?node-id=0-1&p=f&t=gPdckx0LXhrGvGHS-0).
 
 ---  
 
