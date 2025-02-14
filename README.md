@@ -4,7 +4,7 @@
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)  
 ![Build](https://img.shields.io/badge/Build-Passing-brightgreen?style=flat-square)  
 ![Figma](https://img.shields.io/badge/Design-Figma-red?style=flat-square&logo=figma&logoColor=white)  
-![Supabase](https://img.shields.io/badge/Supabase-Authentication-brightgreen?style=flat-square&logo=supabase)
+![Firebase](https://img.shields.io/badge/Firebase-Authentication-brightgreen?style=flat-square&logo=firebase)
 
 This **Assignment** is designed to evaluate your **Flutter development** skills and **problem-solving** abilities. The task closely resembles features from our **OruPhones app**
 
