@@ -51,8 +51,8 @@ Ensure the following are installed on your system:
 
 1. **Clone the Repository**:
    ```bash  
-   git clone https://github.com/acumensa/my-wonder-app.git  
-   cd my-wonder-app  
+   git clone https://github.com/AmbrishTripathi6974/oru_phones.git  
+   cd oru_phones  
    ```  
 
 2. **Install Dependencies**:
