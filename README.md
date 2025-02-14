@@ -19,23 +19,18 @@ Explore the meticulously crafted UI/UX on [Figma](https://www.figma.com/design/l
 
 🚀 Authentication Flow
 
-✔ **Splash Screen**  
-   - Checks authentication state & navigates accordingly.  
+✔ **Splash Screen** - Checks authentication state & navigates accordingly.  
 
-✔ **Login OTP Screen**  
-   - Enter phone number & request OTP.  
+✔ **Login OTP Screen** - Enter phone number & request OTP.  
 
-✔ **Verify OTP Screen**  
-   - Enter OTP & authenticate user.  
+✔ **Verify OTP Screen** - Enter OTP & authenticate user.  
 
-✔ **Confirm Name Screen**  
-   - Prompt new users to set a name before proceeding.  
+✔ **Confirm Name Screen** - Prompt new users to set a name before proceeding.  
 
-✔ **Standalone & Bottom Sheet Support**  
-   - Authentication screens work both as full pages and bottom sheets.  
+✔ **Standalone & Bottom Sheet Support** - Authentication screens work both as full pages and bottom sheets.  
 
-✔ **State Management**  
-   - Use Flutter Bloc.  
+✔ **State Management** - Use Flutter Bloc.  
+
 ---  
 
 ## 🛠️ Tech Stack
