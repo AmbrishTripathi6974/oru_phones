@@ -58,6 +58,11 @@ Ensure the following are installed on your system:
 2. **Install Dependencies**:
    ```bash  
    flutter pub get  
+   ```
+
+2. **Connect Firebase**:
+   ```bash  
+   flutterfire configure "demo project"  
    ```  
 
 3. **Run the App**:
