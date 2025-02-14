@@ -31,12 +31,10 @@ Explore the meticulously crafted UI/UX on [Figma](https://www.figma.com/design/l
 
 | Aspect              | Technology           | Description                      |  
 |---------------------|----------------------|----------------------------------|  
-| **Framework**       | [Flutter](https://flutter.dev)   | Cross-platform mobile development. |  
-| **Authentication**  | [Supabase](https://supabase.io/) | User login and sign-up management. |  
+| **Framework**       | [Flutter](https://flutter.dev)   | Cross-platform mobile development. |   
 | **State Management**| [Flutter BLoC](https://bloclibrary.dev/) | Simplified state handling.       |  
 | **Networking**      | [Dio](https://pub.dev/packages/dio) | Robust HTTP client.             |  
-| **Routing**         | [GoRouter](https://pub.dev/packages/go_router) | Dynamic navigation.             |  
-| **Local Storage**   | [Hive](https://pub.dev/packages/hive) | Efficient lightweight storage.   |  
+| **Routing**         | [GoRouter](https://pub.dev/packages/go_router) | Dynamic navigation.             |   
 
 ---  
 
@@ -62,14 +60,7 @@ Ensure the following are installed on your system:
    flutter pub get  
    ```  
 
-3. **Set Up Environment Variables**:  
-   Create a `.env` file in the root directory and add the following:
-   ```env  
-   SUPABASE_URL=https://your-supabase-url.supabase.co  
-   SUPABASE_KEY=your-anon-or-service-key  
-   ```  
-
-4. **Run the App**:
+3. **Run the App**:
    ```bash  
    flutter run  
    ```  
