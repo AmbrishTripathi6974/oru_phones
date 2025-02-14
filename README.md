@@ -7,6 +7,7 @@
 ![Supabase](https://img.shields.io/badge/Supabase-Authentication-brightgreen?style=flat-square&logo=supabase)
 
 This **Assignment** is designed to evaluate your **Flutter development** skills and **problem-solving** abilities. The task closely resembles features from our **OruPhones app**
+
 ---  
 
 ## 🎨 Design Reference
