@@ -78,12 +78,10 @@ A glimpse at the major dependencies:
 
 | Dependency            | Version | Purpose                                  |  
 |-----------------------|---------|------------------------------------------|  
-| `flutter_bloc`        | ^8.1.6  | State management.                        |  
-| `hydrated_bloc`       | ^9.1.5  | Persistent state management.             |  
+| `flutter_bloc`        | ^8.1.6  | State management            |  
 | `dio`                 | ^5.7.0  | Advanced HTTP client.                    |  
 | `go_router`           | ^14.6.1 | Simplified navigation management.        |  
-| `hive`                | ^2.2.3  | Lightweight local database.              |  
-| `supabase_flutter`    | ^1.2.0  | Authentication and backend integration.  |  
+| `firebase_flutter`    | ^1.2.0  | Authentication and backend integration.  |  
 
 For a complete list, check out the [`pubspec.yaml`](./pubspec.yaml).
 
@@ -104,23 +102,10 @@ lib/
 
 ---  
 
-## 🖥️ Screenshots
+## 🌐 ORU_Phones
 
-### Coming Soon
+**OruPhone** is a feature-rich mobile application designed to enhance the shopping experience for **smartphones** and **accessories**. It offers seamless product discovery, **smart filtering**, and personalized **recommendations**. With a clean **UI**, intuitive navigation, and real-time updates, **OruPhones** ensures a smooth and engaging user experience. 🚀
 
----  
+---   
 
-## 🌐 Acumensa
-
-This application is an intellectual property of **Acumensa** and is not open-source. Unauthorized duplication, sharing, or modification is prohibited.
-
----  
-
-### 👥 Contributors
-
-- **Project Owner**: Acumensa Team
-- **Lead Developer**: Arya Pratap Singh | [Working Branch](https://github.com/AcumensaDev/MyWonderApp/tree/latest-release)
-
----  
-
-Made with 💙 by **Acumensa**.  
+Made with 💙 by **Ambrish**.  
