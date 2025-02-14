@@ -11,7 +11,9 @@ void main() {
     MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => AuthBloc()), // Provide AuthBloc
-        BlocProvider(create: (context) => SidebarBloc()), // Provide SidebarBloc
+        BlocProvider(
+          create: (context) => SidebarBloc(BlocProvider.of<AuthBloc>(context)),
+        ),
       ],
       child: const MyApp(),
     ),

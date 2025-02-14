@@ -10,6 +10,7 @@ import 'package:oru_phones/features/home/presentation/widgets/option_grid.dart';
 import 'package:oru_phones/features/home/social/social_widget.dart';
 import 'package:oru_phones/features/home/sort_and_filter/sort_and_filter_button.dart';
 
+import '../../../auth/bloc/auth_bloc.dart';
 import '../../../side_menu_bar/bloc/sidebar_bloc.dart';
 import '../../../side_menu_bar/bloc/sidebar_state.dart';
 import '../../../side_menu_bar/side_menu_bar.dart';
@@ -24,7 +25,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => SidebarBloc(),
+      create: (context) => SidebarBloc(BlocProvider.of<AuthBloc>(context)),
       child: Scaffold(
         backgroundColor: Colors.grey[100], // Light background
         body: Stack(

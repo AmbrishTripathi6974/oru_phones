@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:oru_phones/features/auth/bloc/auth_state.dart';
+
+import '../auth/bloc/auth_bloc.dart';
+import '../auth/bloc/auth_event.dart';
 import 'bloc/sidebar_bloc.dart';
 import 'bloc/sidebar_event.dart';
 import 'bloc/sidebar_state.dart';
@@ -17,14 +21,12 @@ class SidebarMenu extends StatelessWidget {
         return AnimatedPositioned(
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
-          left: state is SidebarOpened || state is UserLoggedIn
-              ? 0
-              : -screenWidth,
+          left: state is SidebarOpened ? 0 : -screenWidth,
           top: 0,
           bottom: 0,
           child: Container(
             width: screenWidth * 0.75,
-            padding: const EdgeInsets.only(top: 40), // 🔹 Added top padding
+            padding: const EdgeInsets.only(top: 40),
             decoration: BoxDecoration(
               color: Colors.white,
               boxShadow: [
@@ -34,83 +36,93 @@ class SidebarMenu extends StatelessWidget {
                 ),
               ],
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header: Logo & Close Icon
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Image.asset('assets/logo.png', height: 40),
-                      IconButton(
-                        icon: const Icon(Icons.close_rounded),
-                        onPressed: () {
-                          context.read<SidebarBloc>().add(ToggleSidebar());
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-
-                // User Profile or Login Button
-                if (state is UserLoggedIn)
-                  _buildUserProfile(state.name, state.joiningDate)
-                else
-                  _buildLoginButton(context),
-
-                const SizedBox(height: 10),
-
-                // Sell Button
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: ElevatedButton(
-                    onPressed: () {}, // No action
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.amber,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+            child: BlocBuilder<AuthBloc, AuthState>(
+              builder: (context, authState) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 🔹 Header: Logo & Close Icon
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Image.asset('assets/logo.png', height: 40),
+                          IconButton(
+                            icon: const Icon(Icons.close_rounded),
+                            onPressed: () {
+                              context.read<SidebarBloc>().add(ToggleSidebar());
+                            },
+                          ),
+                        ],
                       ),
                     ),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: Center(
-                          child: Text(
-                        'Sell Your Phone',
-                        style: GoogleFonts.poppins(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black),
-                      )),
-                    ),
-                  ),
-                ),
 
-                // Logout Button (Visible when logged in)
-                if (state is UserLoggedIn)
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.logout, color: Colors.black54),
-                        const SizedBox(width: 10),
-                        GestureDetector(
-                          onTap: () {
+                    // 🔹 User Profile or Login Button
+                    if (authState is AuthenticatedState)
+                      _buildUserProfile(authState.userName, authState.joiningDate)
+                    else
+                      _buildLoginButton(context),
+
+                    const SizedBox(height: 10),
+
+                    // 🔹 Sell Button
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.amber,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Center(
+                            child: Text(
+                              'Sell Your Phone',
+                              style: GoogleFonts.poppins(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    // 🔹 Logout Button (Visible when logged in)
+                    if (authState is AuthenticatedState)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            context.read<AuthBloc>().add(const LogoutEvent());
                             context.read<SidebarBloc>().add(UserLogout());
                           },
-                          child: const Text("Logout",
-                              style: TextStyle(fontSize: 16)),
+                          icon: const Icon(Icons.logout, color: Colors.black),
+                          label: Text(
+                            "Logout",
+                            style: GoogleFonts.poppins(fontSize: 16, color: Colors.black),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
                         ),
-                      ],
-                    ),
-                  ),
+                      ),
 
-                const Spacer(),
+                    const Spacer(),
 
-                // Bottom Chips Section
-                _buildBottomChips(),
-              ],
+                    // 🔹 Bottom Chips Section
+                    _buildBottomChips(),
+                  ],
+                );
+              },
             ),
           ),
         );
@@ -118,6 +130,7 @@ class SidebarMenu extends StatelessWidget {
     );
   }
 
+  // 🔹 Login Button Widget
   Widget _buildLoginButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -134,41 +147,47 @@ class SidebarMenu extends StatelessWidget {
         child: SizedBox(
           width: double.infinity,
           child: Center(
-              child: Text(
-            'Login/SignUp',
-            style: GoogleFonts.poppins(
-                fontSize: 15, fontWeight: FontWeight.w500, color: Colors.white),
-          )),
+            child: Text(
+              'Login/SignUp',
+              style: GoogleFonts.poppins(
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
+              ),
+            ),
+          ),
         ),
       ),
     );
   }
 
+  // 🔹 User Profile Widget
   Widget _buildUserProfile(String name, String joiningDate) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
       child: Row(
         children: [
           const CircleAvatar(
-            radius: 25,
+            radius: 30,
             backgroundImage: AssetImage('assets/profile.png'),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 10),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 name,
-                style: const TextStyle(
+                style: GoogleFonts.poppins(
                   fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
                 ),
               ),
               Text(
                 "Joined: $joiningDate",
-                style: const TextStyle(
+                style: GoogleFonts.poppins(
                   fontSize: 12,
-                  color: Colors.grey,
+                  color: Colors.grey[700],
                 ),
               ),
             ],
@@ -177,12 +196,11 @@ class SidebarMenu extends StatelessWidget {
       ),
     );
   }
-
+  // 🔹 Bottom Chips Section
   Widget _buildBottomChips() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-          vertical: 24, horizontal: 12), // 🔹 Added padding
+      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 12),
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
@@ -206,6 +224,7 @@ class SidebarMenu extends StatelessWidget {
     );
   }
 
+  // 🔹 Individual Chip Widget
   Widget _buildChip(String text, String iconPath) {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -226,8 +245,7 @@ class SidebarMenu extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('assets/images/side_menu_icons/$iconPath',
-                  height: 30),
+              Image.asset('assets/images/side_menu_icons/$iconPath', height: 30),
               const SizedBox(height: 8),
               Text(
                 text,

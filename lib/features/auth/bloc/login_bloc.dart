@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -25,6 +26,7 @@ class ToggleCheckboxEvent extends LoginEvent {
   List<Object?> get props => [isChecked];
 }
 
+
 // STATES
 abstract class LoginState extends Equatable {
   @override
@@ -49,10 +51,11 @@ class LoginFailure extends LoginState {
 
   LoginFailure(this.error);
 
+  String get errorMessage => error; // ✅ Added getter
+
   @override
   List<Object?> get props => [error];
 }
-
 class CheckboxToggled extends LoginState {
   final bool isChecked;
 
@@ -64,24 +67,46 @@ class CheckboxToggled extends LoginState {
 
 // BLOC CLASS
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
+  final Dio dio = Dio();
   bool isChecked = false;
 
   LoginBloc() : super(LoginInitial()) {
-    on<SendOTPEvent>((event, emit) async {
-      emit(LoginLoading());
+    on<SendOTPEvent>(_sendOTP);
+    on<ToggleCheckboxEvent>(_toggleCheckbox);
+  }
 
-      await Future.delayed(const Duration(seconds: 2)); // Simulating API Call
+  Future<void> _sendOTP(SendOTPEvent event, Emitter<LoginState> emit) async {
+    emit(LoginLoading());
 
-      if (event.phoneNumber.length == 10) {
-        emit(LoginSuccess(event.phoneNumber));
+    final String phoneNumber = event.phoneNumber.trim();
+    if (phoneNumber.length != 10) {
+      emit(LoginFailure("Enter a valid 10-digit phone number"));
+      return;
+    }
+
+    final data = {
+      "countryCode": 91,
+      "mobileNumber": int.parse(phoneNumber),
+    };
+
+    try {
+      final response = await dio.post(
+        "http://40.90.224.241:5000/login/otpCreate",
+        data: data,
+      );
+
+      if (response.statusCode == 200) {
+        emit(LoginSuccess(phoneNumber));
       } else {
-        emit(LoginFailure("Invalid phone number"));
+        emit(LoginFailure("Failed to send OTP. Try again."));
       }
-    });
+    } catch (e) {
+      emit(LoginFailure("Something went wrong. Check your connection."));
+    }
+  }
 
-    on<ToggleCheckboxEvent>((event, emit) {
-      isChecked = event.isChecked;
-      emit(CheckboxToggled(isChecked));
-    });
+  void _toggleCheckbox(ToggleCheckboxEvent event, Emitter<LoginState> emit) {
+    isChecked = event.isChecked;
+    emit(CheckboxToggled(isChecked));
   }
 }

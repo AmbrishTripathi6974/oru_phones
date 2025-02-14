@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:oru_phones/features/auth/bloc/confirm_name_bloc.dart';
+import 'package:oru_phones/features/auth/bloc/login_bloc.dart';
 import 'package:oru_phones/features/auth/presentation/screens/confirm_name_screen.dart';
+import 'package:oru_phones/features/auth/presentation/screens/login_screen.dart';
+import 'package:oru_phones/features/auth/presentation/screens/otp_screen.dart';
+import 'package:oru_phones/features/home/presentation/screens/home_screen.dart';
 import 'package:oru_phones/features/splash/presentation/splash_screen.dart';
 
-import '../features/auth/bloc/login_bloc.dart';
-import '../features/auth/presentation/screens/login_screen.dart';
-import '../features/home/presentation/screens/home_screen.dart';
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -15,6 +16,14 @@ class AppRouter {
           builder: (context) => BlocProvider(
             create: (context) => LoginBloc(),
             child: LoginPage(),
+          ),
+        );
+      case '/otp':
+        final String phoneNumber = settings.arguments as String; // Get phone number
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+            create: (context) => LoginBloc(),
+            child: OtpScreen(phoneNumber: phoneNumber),
           ),
         );
       case '/confirmName':

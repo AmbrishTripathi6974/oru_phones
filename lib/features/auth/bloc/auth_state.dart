@@ -1,18 +1,37 @@
+abstract class AuthState {}
 
-import 'package:equatable/equatable.dart';
+// 🔹 Initial State
+class AuthInitial extends AuthState {}
 
-abstract class AuthState extends Equatable {
-  @override
-  List<Object> get props => [];
+// 🔹 Loading State
+class AuthLoading extends AuthState {}
+
+// 🔹 OTP Sent State
+class OtpSentState extends AuthState {}
+
+// 🔹 OTP Verified State
+class OtpVerifiedState extends AuthState {
+  final bool isNewUser;
+  OtpVerifiedState({required this.isNewUser});
+
+  List<Object?> get props => [isNewUser];
 }
 
-class Unauthenticated extends AuthState {}
-
-class Authenticated extends AuthState {
+// 🔹 Authenticated State (User is logged in)
+class AuthenticatedState extends AuthState {
   final String userName;
+  final String joiningDate;
 
-  Authenticated({required this.userName});
+  AuthenticatedState({required this.userName, required this.joiningDate});
 
-  @override
-  List<Object> get props => [userName];
+  List<Object?> get props => [userName, joiningDate];
+}
+
+// 🔹 Unauthenticated State (User is logged out)
+class UnauthenticatedState extends AuthState {}
+
+// 🔹 Failure State
+class AuthFailure extends AuthState {
+  final String message;
+  AuthFailure(this.message);
 }

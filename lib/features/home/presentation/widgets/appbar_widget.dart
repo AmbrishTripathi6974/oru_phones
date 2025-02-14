@@ -17,52 +17,35 @@ class CustomAppBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          // 🔹 Menu & Logo
           Row(
             children: [
-              // Sidebar Toggle Button (Replaced Icon with Image)
               IconButton(
-                icon: Image.asset("assets/menu.png", height: 36, width: 36), 
+                icon: Image.asset("assets/menu.png", height: 36, width: 36),
                 onPressed: () {
                   context.read<SidebarBloc>().add(ToggleSidebar());
                 },
               ),
-              Image.asset("assets/logo.png", height: 30), // App logo
+              Image.asset("assets/logo.png", height: 30),
             ],
           ),
+
+          // 🔹 Location & Login
           Row(
             children: [
-              Text("India",
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: GoogleFonts.poppins().fontFamily)),
+              Text(
+                "India",
+                style: GoogleFonts.poppins(fontSize: 16),
+              ),
               const SizedBox(width: 6),
               const Image(image: AssetImage('assets/location.png')),
               const SizedBox(width: 20),
 
-              // BlocBuilder to check if user is logged in
               BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, state) {
-                  if (state is Authenticated) {
-                    // If user is logged in, show profile
-                    return Row(
-                      children: [
-                        const CircleAvatar(
-                          backgroundImage: AssetImage("assets/profile.png"),
-                          radius: 16,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          state.userName, // Username from Bloc
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontFamily: GoogleFonts.poppins().fontFamily,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    );
+                  if (state is AuthenticatedState) {
+                    return const SizedBox.shrink(); // 🔹 Do not hide AppBar
                   } else {
-                    // If not logged in, show Login button
                     return ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFF6C018),
@@ -71,16 +54,14 @@ class CustomAppBar extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        // Redirect to login page
                         Navigator.pushNamed(context, "/login");
                       },
                       child: Text(
                         "Login",
-                        style: TextStyle(
-                          color: Colors.black,
+                        style: GoogleFonts.poppins(
                           fontSize: 12,
-                          fontFamily: GoogleFonts.poppins().fontFamily,
                           fontWeight: FontWeight.w500,
+                          color: Colors.black,
                         ),
                       ),
                     );

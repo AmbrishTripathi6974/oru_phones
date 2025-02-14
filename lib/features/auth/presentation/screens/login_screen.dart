@@ -11,11 +11,11 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: BlocProvider(
-        create: (context) => LoginBloc(),
-        child: Stack(
+    return BlocProvider(
+      create: (context) => LoginBloc(),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Stack(
           children: [
             Center(
               child: Padding(
@@ -24,7 +24,7 @@ class LoginPage extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Logo & Title
+                    // **Logo & Title**
                     Center(
                       child: Column(
                         children: [
@@ -51,7 +51,7 @@ class LoginPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 100),
 
-                    // Phone Number Input
+                    // **Phone Number Input**
                     Text(
                       AppStrings.enterPhoneNumber,
                       style: GoogleFonts.poppins(
@@ -72,7 +72,8 @@ class LoginPage extends StatelessWidget {
                                 fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                         ),
-                        prefixIconConstraints: const BoxConstraints(minWidth: 50),
+                        prefixIconConstraints:
+                            const BoxConstraints(minWidth: 50),
                         hintText: AppStrings.mobileNumberHint,
                         hintStyle: GoogleFonts.poppins(),
                         filled: true,
@@ -85,11 +86,11 @@ class LoginPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 50),
 
-                    // Checkbox & Terms Link
+                    // **Checkbox & Terms Link**
                     BlocBuilder<LoginBloc, LoginState>(
                       builder: (context, state) {
                         bool isChecked =
-                            (state is CheckboxToggled) ? state.isChecked : false;
+                            state is CheckboxToggled ? state.isChecked : false;
                         return Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
@@ -117,7 +118,8 @@ class LoginPage extends StatelessWidget {
                                   AppStrings.acceptTerms,
                                   style: GoogleFonts.poppins(
                                     fontSize: 14,
-                                    color: const Color(0xFF5E3BEE), // Link color
+                                    color:
+                                        const Color(0xFF5E3BEE), // Link color
                                     decoration: TextDecoration.underline,
                                   ),
                                 ),
@@ -127,22 +129,20 @@ class LoginPage extends StatelessWidget {
                         );
                       },
                     ),
-                    // const SizedBox(height: 10),
 
-                    // Next Button
+                    // **Next Button**
                     BlocConsumer<LoginBloc, LoginState>(
                       listener: (context, state) {
                         if (state is LoginSuccess) {
-                          Navigator.pushNamed(context, '/home');
+                          Navigator.pushNamed(context, '/otp',
+                              arguments: state.phoneNumber);
                         } else if (state is LoginFailure) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                AppStrings.invalidPhoneNumber,
-                                style: GoogleFonts.poppins(color: Colors.red),
-                              ),
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(
+                              state.errorMessage, // Now correctly fetching the error message
+                              style: GoogleFonts.poppins(color: Colors.red),
                             ),
-                          );
+                          ));
                         }
                       },
                       builder: (context, state) {
@@ -153,19 +153,35 @@ class LoginPage extends StatelessWidget {
                             onPressed: (state is LoginLoading)
                                 ? null
                                 : () {
-                                    final phoneNumber = phoneController.text.trim();
-                                    context
-                                        .read<LoginBloc>()
-                                        .add(SendOTPEvent(phoneNumber));
+                                    final phoneNumber =
+                                        phoneController.text.trim();
+                                    if (phoneNumber.length == 10) {
+                                      context
+                                          .read<LoginBloc>()
+                                          .add(SendOTPEvent(phoneNumber));
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            "Enter a valid 10-digit phone number",
+                                            style: GoogleFonts.poppins(
+                                                color: Colors.red),
+                                          ),
+                                        ),
+                                      );
+                                    }
                                   },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF5E3BEE), // Purple button
+                              backgroundColor:
+                                  const Color(0xFF5E3BEE), // Purple button
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
                             child: state is LoginLoading
-                                ? const CircularProgressIndicator(color: Colors.white)
+                                ? const CircularProgressIndicator(
+                                    color: Colors.white)
                                 : Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
@@ -178,7 +194,11 @@ class LoginPage extends StatelessWidget {
                                         ),
                                       ),
                                       const SizedBox(width: 10),
-                                      const Icon(Icons.arrow_forward, size: 20, color: Colors.white,),
+                                      const Icon(
+                                        Icons.arrow_forward,
+                                        size: 20,
+                                        color: Colors.white,
+                                      ),
                                     ],
                                   ),
                           ),
@@ -190,14 +210,15 @@ class LoginPage extends StatelessWidget {
               ),
             ),
 
-            // Close Button (Top Right)
+            // **Close Button (Top Right)**
             Positioned(
               top: 40,
               right: 20,
               child: IconButton(
                 icon: const Icon(Icons.close, size: 28),
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/home', (route) => false);
                 },
               ),
             ),
