@@ -12,7 +12,7 @@
 
 ## 🎨 Design Reference
 
-The UI/UX design for this authentication flow has been meticulously crafted to provide a seamless and intuitive user experience. The design follows a minimalist yet modern approach, ensuring clarity, ease of use, and smooth navigation. [Figma](https://www.figma.com/design/l2K16E94wmCvWeG2EpWXVF/ORUphones-Flutter-Dev-Intern-Assignment?node-id=0-1&p=f&t=gPdckx0LXhrGvGHS-0).
+Explore the meticulously crafted UI/UX on [Figma](https://www.figma.com/design/l2K16E94wmCvWeG2EpWXVF/ORUphones-Flutter-Dev-Intern-Assignment?node-id=0-1&p=f&t=gPdckx0LXhrGvGHS-0).
 
 ---  
 
