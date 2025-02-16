@@ -41,7 +41,12 @@ class ConfirmNameEvent extends AuthEvent {
   List<Object?> get props => [name];
 }
 
-// 🔹 Logout Event (Added)
+// 🔹 Logout Event
 class LogoutEvent extends AuthEvent {
   const LogoutEvent();
+}
+
+// 🔹 Check Authentication Event (To check session)
+class CheckAuthEvent extends AuthEvent {
+  const CheckAuthEvent();
 }

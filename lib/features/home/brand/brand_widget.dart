@@ -179,7 +179,7 @@ class _BrandBottomSheetContent extends StatelessWidget {
               imageUrl: brand.imagePath,
               width: 30,
               height: 30,
-              fit: BoxFit.cover,
+              fit: BoxFit.contain,
               placeholder: (context, url) => const Padding(
                 padding: EdgeInsets.all(8),
                 child: CircularProgressIndicator(strokeWidth: 2),

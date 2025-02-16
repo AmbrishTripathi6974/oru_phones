@@ -19,62 +19,86 @@ class CustomBannerWidget extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: BlocProvider(
         create: (context) => BannerCubit(imagePaths.length),
-        child: BlocBuilder<BannerCubit, int>(
-          builder: (context, currentIndex) {
-            return Column(
-              mainAxisSize: MainAxisSize.min, // Ensure minimal height
-              children: [
-                // Banner Image
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: SizedBox(
-                    height: 180,
-                    width: double.infinity,
-                    child: Image.asset(
-                      imagePaths[currentIndex],
-                      fit: BoxFit.cover,
-                      key: ValueKey(currentIndex),
-                      frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-                        return frame == null
-                            ? const Center(child: CircularProgressIndicator())
-                            : child;
-                      },
-                    ),
-                  ),
-                ),
+        child: _BannerView(imagePaths: imagePaths),
+      ),
+    );
+  }
+}
 
-                const SizedBox(height: 8), // Space between image and dots
+class _BannerView extends StatelessWidget {
+  final List<String> imagePaths;
+  final PageController pageController = PageController();
 
-                // Dots Indicator (Now positioned BELOW the image)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(imagePaths.length, (index) {
-                    return GestureDetector(
-                      onTap: () {
-                        context.read<BannerCubit>().manualScroll(index);
-                      },
-                      child: Container(
-                        width: 8,
-                        height: 8,
-                        margin: const EdgeInsets.symmetric(horizontal: 3),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: currentIndex == index
-                              ? Colors.grey // Selected dot (solid grey)
-                              : Colors.transparent, // Unselected dots are transparent
-                          border: Border.all(
-                            color: const Color(0xFFABABAB), // Greyish border
-                            width: 1,
-                          ),
+  _BannerView({required this.imagePaths});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<BannerCubit, int>(
+      listener: (context, currentIndex) {
+        pageController.animateToPage(
+          currentIndex,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Banner Image with PageView
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: SizedBox(
+              height: 180,
+              width: double.infinity,
+              child: PageView.builder(
+                controller: pageController,
+                itemCount: imagePaths.length,
+                onPageChanged: (index) {
+                  context.read<BannerCubit>().manualScroll(index);
+                },
+                itemBuilder: (context, index) {
+                  return Image.asset(
+                    imagePaths[index],
+                    fit: BoxFit.cover,
+                  );
+                },
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 8),
+
+          // Dots Indicator
+          BlocBuilder<BannerCubit, int>(
+            builder: (context, currentIndex) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(imagePaths.length, (index) {
+                  return GestureDetector(
+                    onTap: () {
+                      context.read<BannerCubit>().manualScroll(index);
+                    },
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      margin: const EdgeInsets.symmetric(horizontal: 3),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: currentIndex == index
+                            ? Colors.grey
+                            : Colors.transparent,
+                        border: Border.all(
+                          color: const Color(0xFFABABAB),
+                          width: 1,
                         ),
                       ),
-                    );
-                  }),
-                ),
-              ],
-            );
-          },
-        ),
+                    ),
+                  );
+                }),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

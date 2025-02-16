@@ -1,21 +1,37 @@
 import 'dart:developer';
-import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../services/dio_service.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final Dio _dio = Dio();
+  final DioService _dioService = DioService();
 
   AuthBloc() : super(AuthInitial()) {
+    // 🔹 Check Authentication on App Start
+    on<CheckAuthEvent>((event, emit) async {
+      emit(AuthLoading());
+      bool isLoggedIn = await _dioService.checkUserSession();
+
+      if (isLoggedIn) {
+        final userData = await _dioService.loadUserData();
+        emit(AuthenticatedState(
+          userName: userData['userName']!,
+          joiningDate: userData['createdDate']!,
+        ));
+      } else {
+        emit(UnauthenticatedState());
+      }
+    });
+
     // 🔹 Send OTP Event
     on<SendOtpEvent>((event, emit) async {
       emit(AuthLoading());
       try {
         log("🔹 Sending OTP: countryCode=${event.countryCode}, phone=${event.phoneNumber}");
 
-        final response = await _dio.post(
-          'http://40.90.224.241:5000/login/otpCreate',
+        final response = await _dioService.dio.post(
+          '/login/otpCreate',
           data: {
             "countryCode": event.countryCode,
             "mobileNumber": int.parse(event.phoneNumber),
@@ -29,12 +45,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         } else {
           emit(AuthFailure(response.data['reason'] ?? "Failed to send OTP"));
         }
-      } on DioException catch (e) {
-        log("❌ OTP Error: ${e.message}");
-        emit(AuthFailure("Failed to send OTP. Please try again."));
       } catch (e) {
-        log("❌ Unexpected OTP Error: $e");
-        emit(AuthFailure("Something went wrong while sending OTP"));
+        log("❌ OTP Error: $e");
+        emit(AuthFailure("Failed to send OTP. Please try again."));
       }
     });
 
@@ -44,8 +57,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         log("🔹 Verifying OTP: countryCode=${event.countryCode}, phone=${event.phoneNumber}, otp=${event.otp}");
 
-        final response = await _dio.post(
-          'http://40.90.224.241:5000/login/otpValidate',
+        final response = await _dioService.dio.post(
+          '/login/otpValidate',
           data: {
             "countryCode": event.countryCode,
             "mobileNumber": int.parse(event.phoneNumber),
@@ -61,25 +74,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           String joiningDate = user?['createdDate'] ?? "";
 
           bool isNewUser = userName.trim().isEmpty;
-
           log("✅ User Verified. isNewUser: $isNewUser, joiningDate: $joiningDate");
 
-          // Emit the correct state
+          // 🔹 Save user data in cookies
+          await _dioService.saveUserData(user);
+
           if (isNewUser) {
             emit(OtpVerifiedState(isNewUser: isNewUser));
           } else {
-            emit(AuthenticatedState(
-                userName: userName, joiningDate: joiningDate));
+            emit(AuthenticatedState(userName: userName, joiningDate: joiningDate));
           }
         } else {
           emit(AuthFailure(response.data['reason'] ?? "Invalid OTP"));
         }
-      } on DioException catch (e) {
-        log("❌ OTP Verification Error: ${e.message}");
-        emit(AuthFailure("Failed to verify OTP. Please try again."));
       } catch (e) {
-        log("❌ Unexpected OTP Verification Error: $e");
-        emit(AuthFailure("Something went wrong while verifying OTP"));
+        log("❌ OTP Verification Error: $e");
+        emit(AuthFailure("Failed to verify OTP. Please try again."));
       }
     });
 
@@ -89,37 +99,33 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         log("🔹 Confirming Name: ${event.name}");
 
-        final response = await _dio.post(
-          'http://40.90.224.241:5000/update',
+        final response = await _dioService.dio.post(
+          '/update',
           data: {"name": event.name},
         );
 
         log("✅ Confirm Name Response: ${response.data}");
 
         if (response.data['status'] == "SUCCESS") {
-          // Fetch the user details to get the joining date
-          final userResponse =
-              await _dio.get('http://40.90.224.241:5000/isLoggedIn');
+          final userResponse = await _dioService.dio.get('/isLoggedIn');
 
           if (userResponse.data['isLoggedIn'] == true) {
             final user = userResponse.data['user'];
             String joiningDate = user?['createdDate'] ?? "";
 
-            emit(AuthenticatedState(
-                userName: event.name, joiningDate: joiningDate));
+            // 🔹 Save updated user data
+            await _dioService.saveUserData(user);
+
+            emit(AuthenticatedState(userName: event.name, joiningDate: joiningDate));
           } else {
             emit(AuthFailure("Failed to retrieve user details."));
           }
         } else {
-          emit(
-              AuthFailure(response.data['reason'] ?? "Failed to confirm name"));
+          emit(AuthFailure(response.data['reason'] ?? "Failed to confirm name"));
         }
-      } on DioException catch (e) {
-        log("❌ Confirm Name Error: ${e.message}");
-        emit(AuthFailure("Failed to update name. Please try again."));
       } catch (e) {
-        log("❌ Unexpected Confirm Name Error: $e");
-        emit(AuthFailure("Something went wrong while confirming name"));
+        log("❌ Confirm Name Error: $e");
+        emit(AuthFailure("Failed to update name. Please try again."));
       }
     });
 
@@ -129,21 +135,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         log("🔹 Logging out user");
 
-        final response = await _dio.post('http://40.90.224.241:5000/logout');
+        final response = await _dioService.dio.post('/logout');
 
         log("✅ Logout Response: ${response.data}");
 
         if (response.data['status'] == "SUCCESS") {
+          await _dioService.clearSessionData(); // Clears only session cookies
           emit(UnauthenticatedState());
         } else {
           emit(AuthFailure("Failed to logout. Please try again."));
         }
-      } on DioException catch (e) {
-        log("❌ Logout Error: ${e.message}");
-        emit(AuthFailure("Logout failed. Please try again."));
       } catch (e) {
-        log("❌ Unexpected Logout Error: $e");
-        emit(AuthFailure("Something went wrong while logging out"));
+        log("❌ Logout Error: $e");
+        emit(AuthFailure("Logout failed. Please try again."));
       }
     });
   }

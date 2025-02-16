@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:oru_phones/features/auth/bloc/auth_state.dart';
+import 'package:oru_phones/features/auth/bloc/auth_bloc.dart';
+import 'package:oru_phones/features/auth/bloc/auth_event.dart';
 
-import '../auth/bloc/auth_bloc.dart';
-import '../auth/bloc/auth_event.dart';
+import '../services/dio_service.dart';
 import 'bloc/sidebar_bloc.dart';
 import 'bloc/sidebar_event.dart';
 import 'bloc/sidebar_state.dart';
@@ -36,8 +36,12 @@ class SidebarMenu extends StatelessWidget {
                 ),
               ],
             ),
-            child: BlocBuilder<AuthBloc, AuthState>(
-              builder: (context, authState) {
+            child: FutureBuilder<Map<String, String>>(
+              future: DioService().loadUserData(),
+              builder: (context, snapshot) {
+                String? userName = snapshot.data?["userName"];
+                String? joiningDate = snapshot.data?["createdDate"];
+
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -59,8 +63,8 @@ class SidebarMenu extends StatelessWidget {
                     ),
 
                     // 🔹 User Profile or Login Button
-                    if (authState is AuthenticatedState)
-                      _buildUserProfile(authState.userName, authState.joiningDate)
+                    if (userName != null && userName.isNotEmpty)
+                      _buildUserProfile(userName, joiningDate ?? "")
                     else
                       _buildLoginButton(context),
 
@@ -93,19 +97,22 @@ class SidebarMenu extends StatelessWidget {
                       ),
                     ),
 
-                    // 🔹 Logout Button (Visible when logged in)
-                    if (authState is AuthenticatedState)
+                    // 🔹 Logout Button
+                    if (userName != null && userName.isNotEmpty)
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 10),
                         child: ElevatedButton.icon(
-                          onPressed: () {
+                          onPressed: () async {
+                            await DioService().clearSessionData();
                             context.read<AuthBloc>().add(const LogoutEvent());
                             context.read<SidebarBloc>().add(UserLogout());
                           },
                           icon: const Icon(Icons.logout, color: Colors.black),
                           label: Text(
                             "Logout",
-                            style: GoogleFonts.poppins(fontSize: 16, color: Colors.black),
+                            style: GoogleFonts.poppins(
+                                fontSize: 16, color: Colors.black),
                           ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
@@ -196,6 +203,7 @@ class SidebarMenu extends StatelessWidget {
       ),
     );
   }
+
   // 🔹 Bottom Chips Section
   Widget _buildBottomChips() {
     return Container(
@@ -245,11 +253,13 @@ class SidebarMenu extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('assets/images/side_menu_icons/$iconPath', height: 30),
+              Image.asset('assets/images/side_menu_icons/$iconPath',
+                  height: 30),
               const SizedBox(height: 8),
               Text(
                 text,
-                style: GoogleFonts.poppins(fontSize: 10, fontWeight: FontWeight.w500),
+                style: GoogleFonts.poppins(
+                    fontSize: 10, fontWeight: FontWeight.w500),
                 textAlign: TextAlign.center,
               ),
             ],

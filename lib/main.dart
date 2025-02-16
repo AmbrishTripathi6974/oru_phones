@@ -2,22 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/app_route.dart';
 import 'features/auth/bloc/auth_bloc.dart';
+import 'features/home/product/bloc/favourite_bloc.dart';
 import 'features/side_menu_bar/bloc/sidebar_bloc.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(
-    MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => AuthBloc()), // Provide AuthBloc
-        BlocProvider(
-          create: (context) => SidebarBloc(BlocProvider.of<AuthBloc>(context)),
-        ),
-      ],
-      child: const MyApp(),
-    ),
-  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -25,10 +16,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      initialRoute: '/',
-      onGenerateRoute: AppRouter.onGenerateRoute,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => AuthBloc()), // ✅ Provide AuthBloc
+        BlocProvider(
+          create: (context) => SidebarBloc(context.read<AuthBloc>()), // ✅ Proper Bloc reference
+        ),
+        BlocProvider(create: (context) => FavoritesBloc()), // ✅ Provide FavoritesBloc
+      ],
+      child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        initialRoute: '/',
+        onGenerateRoute: AppRouter.onGenerateRoute,
+      ),
     );
   }
 }

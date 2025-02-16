@@ -10,29 +10,28 @@ class SidebarBloc extends Bloc<SidebarEvent, SidebarState> {
   late final StreamSubscription authSubscription;
 
   SidebarBloc(this.authBloc) : super(SidebarClosed()) {
-    // Listen to AuthBloc state changes
+    // 🔹 Listen to AuthBloc state changes
     authSubscription = authBloc.stream.listen((authState) {
       if (authState is AuthenticatedState) {
         add(UserLogin(name: authState.userName, joiningDate: authState.joiningDate));
-      } else if (authState is UnauthenticatedState) {
+      } else {
         add(UserLogout());
       }
     });
 
+    // 🔹 Sidebar toggle logic
     on<ToggleSidebar>((event, emit) {
-      if (state is SidebarClosed) {
-        emit(SidebarOpened());
-      } else {
-        emit(SidebarClosed());
-      }
+      emit(state is SidebarClosed ? SidebarOpened() : SidebarClosed());
     });
 
+    // 🔹 Handle user login (update sidebar state)
     on<UserLogin>((event, emit) {
       emit(UserLoggedIn(name: event.name, joiningDate: event.joiningDate));
     });
 
+    // 🔹 Handle user logout (close sidebar)
     on<UserLogout>((event, emit) {
-      emit(SidebarClosed()); // Ensure sidebar resets on logout
+      emit(SidebarClosed());
     });
   }
 

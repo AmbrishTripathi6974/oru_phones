@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../../../auth/bloc/auth_bloc.dart';
 import '../../../auth/bloc/auth_state.dart';
 import '../../../side_menu_bar/bloc/sidebar_bloc.dart';
 import '../../../side_menu_bar/bloc/sidebar_event.dart';
+import '../../../services/dio_service.dart';
 
 class CustomAppBar extends StatelessWidget {
   const CustomAppBar({super.key});
@@ -13,7 +13,7 @@ class CustomAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -31,19 +31,24 @@ class CustomAppBar extends StatelessWidget {
           ),
 
           // 🔹 Location & Login
-          Row(
-            children: [
-              Text(
-                "India",
-                style: GoogleFonts.poppins(fontSize: 16),
-              ),
-              const SizedBox(width: 6),
-              const Image(image: AssetImage('assets/location.png')),
-              const SizedBox(width: 20),
+          FutureBuilder<Map<String, String>>(
+            future: DioService().loadUserData(),
+            builder: (context, snapshot) {
+              String? userName = snapshot.data?["userName"];
+              
+              return Row(
+                children: [
+                  Text(
+                    "India",
+                    style: GoogleFonts.poppins(fontSize: 16),
+                  ),
+                  const SizedBox(width: 6),
+                  const Image(image: AssetImage('assets/location.png')),
+                  const SizedBox(width: 20),
 
-              BlocBuilder<AuthBloc, AuthState>(
+                  BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, state) {
-                  if (state is AuthenticatedState) {
+                  if (state is AuthenticatedState && userName != null && userName.isNotEmpty) {
                     return const SizedBox.shrink(); // 🔹 Do not hide AppBar
                   } else {
                     return ElevatedButton(
@@ -68,7 +73,9 @@ class CustomAppBar extends StatelessWidget {
                   }
                 },
               ),
-            ],
+                ],
+              );
+            },
           ),
         ],
       ),
